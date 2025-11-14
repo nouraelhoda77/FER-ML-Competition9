@@ -3,14 +3,14 @@ name: Evaluate Submission
 on:
   pull_request:
     paths:
-      - 'submission/*.csv'  # trigger only on submission CSVs
+      - 'submission/*.csv'  # Trigger only on submission CSVs
 
 jobs:
   evaluate:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout public repo (PR branch)
+      # 1️⃣ Checkout the PR branch of the public repo
       - name: Checkout public repo
         uses: actions/checkout@v3
 
@@ -32,16 +32,15 @@ jobs:
       - name: Install dependencies
         run: pip install pandas scikit-learn numpy
 
-      # 5️⃣ Evaluate all CSVs in submission folder
+      # 5️⃣ Evaluate all submissions
       - name: Evaluate submissions
         run: |
-          mkdir -p results
           for file in submission/*.csv; do
             echo "Evaluating $file..."
             python evaluate.py "$file" "private_data/test_labels.csv"
           done
 
-      # 6️⃣ Commit and push only results.csv to main branch
+      # 6️⃣ Commit and push updated leaderboard (results.csv) to main branch
       - name: Commit leaderboard
         run: |
           git config --local user.email "action@github.com"
